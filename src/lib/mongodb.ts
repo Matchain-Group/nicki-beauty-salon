@@ -1,15 +1,10 @@
 import mongoose from 'mongoose'
 import dns from 'dns'
 
-const MONGODB_URI = process.env.MONGODB_URI as string
 const MONGODB_DNS_SERVERS = (process.env.MONGODB_DNS_SERVERS || '8.8.8.8,1.1.1.1')
   .split(',')
   .map((server) => server.trim())
   .filter(Boolean)
-
-if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI is not defined')
-}
 
 interface GlobalMongoose {
   conn: typeof mongoose | null
@@ -26,15 +21,31 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null }
 }
 
-if (MONGODB_DNS_SERVERS.length > 0) {
+let dnsConfigured = false
+
+function configureDnsServers() {
+  if (dnsConfigured || MONGODB_DNS_SERVERS.length === 0) {
+    return
+  }
+
   try {
     dns.setServers(MONGODB_DNS_SERVERS)
   } catch (_error) {
     // Keep default DNS servers if custom resolver setup fails.
   }
+
+  dnsConfigured = true
 }
 
 async function connectDB() {
+  const MONGODB_URI = process.env.MONGODB_URI
+
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not defined')
+  }
+
+  configureDnsServers()
+
   if (cached.conn) {
     return cached.conn
   }

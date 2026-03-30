@@ -94,11 +94,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Demo credentials: admin / admin
-            </p>
-          </div>
         </div>
       </div>
     </div>

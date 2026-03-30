@@ -1,7 +1,5 @@
 import { type AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import connectDB from './mongodb';
-import User from './models/User';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: AuthOptions = {
@@ -35,7 +33,16 @@ export const authOptions: AuthOptions = {
           };
         }
 
-        await connectDB();
+        const [{ default: connectDB }, { default: User }] = await Promise.all([
+          import('./mongodb'),
+          import('./models/User'),
+        ]);
+
+        try {
+          await connectDB();
+        } catch (_error) {
+          return null;
+        }
 
         const user = await User.findOne({
           $or: [{ email: identifier }, { username: identifier }],
