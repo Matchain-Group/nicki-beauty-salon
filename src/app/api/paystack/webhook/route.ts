@@ -99,9 +99,5 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Disable body parsing for raw body access
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Next.js App Router automatically handles raw body access
+// No config needed - request.text() works directly
