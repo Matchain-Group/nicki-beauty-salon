@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
           amount: Math.round(amount * 100),
           metadata: metadata || {},
           currency: 'USD',
-          callback_url: `${process.env.NEXTAUTH_URL}/payment/verify`,
+          callback_url: `${process.env.NEXT_PUBLIC_URL}/payment/verify`,
         }),
       }
     )

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge'; // Optional: use edge runtime for faster response
 
 // Tracking API inspired by github.com/infosaqib/Tracking-API
 // Supports multiple carriers: UPS, FedEx, DHL, USPS
