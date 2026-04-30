@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email, amount, metadata } = body
+
+    console.log('Paystack init request:', { email, amount, metadata })
 
     if (!email || !amount) {
       return NextResponse.json(
@@ -13,10 +17,20 @@ export async function POST(request: NextRequest) {
     }
 
     const secretKey = process.env.PAYSTACK_SECRET_KEY
+    const publicUrl = process.env.NEXT_PUBLIC_URL
+    
+    console.log('Env check:', { secretKeyExists: !!secretKey, publicUrl })
     
     if (!secretKey) {
       return NextResponse.json(
-        { error: 'Paystack secret key not configured' },
+        { error: 'Paystack secret key not configured. Please set PAYSTACK_SECRET_KEY in environment variables.' },
+        { status: 500 }
+      )
+    }
+
+    if (!publicUrl) {
+      return NextResponse.json(
+        { error: 'NEXT_PUBLIC_URL not configured. Please set NEXT_PUBLIC_URL in environment variables.' },
         { status: 500 }
       )
     }

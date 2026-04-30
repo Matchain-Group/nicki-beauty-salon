@@ -42,14 +42,21 @@ export default function CartPage() {
 
       const data = await response.json();
       
-      if (data.success && data.data.authorization_url) {
+      if (data.success && data.data?.authorization_url) {
         window.location.href = data.data.authorization_url;
       } else {
-        throw new Error(data.error || 'Failed to initialize payment');
+        const errorMsg = data.error || 'Failed to initialize payment';
+        console.error('Payment init failed:', data);
+        alert(errorMsg);
+        throw new Error(errorMsg);
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to initialize payment. Please try again.');
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('Failed to initialize payment. Please try again.');
+      }
     } finally {
       setIsCheckingOut(false);
     }
