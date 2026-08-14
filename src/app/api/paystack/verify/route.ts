@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     
     await Order.findOneAndUpdate(
       { paystackRef: reference },
-      { paymentStatus: 'paid' },
+      { status: 'paid', paidAt: new Date() },
       { new: true }
     )
 

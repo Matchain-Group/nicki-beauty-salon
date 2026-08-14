@@ -10,7 +10,7 @@ interface Order {
   _id: string;
   paystackRef: string;
   total: number;
-  paymentStatus: string;
+  status: 'pending' | 'paid';
   createdAt: string;
   products: Array<{
     name: string;
@@ -194,11 +194,11 @@ export default function AccountPage() {
                             </p>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-sm ${
-                            order.paymentStatus === 'paid' 
+                            order.status === 'paid' 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {order.paymentStatus}
+                            {order.status}
                           </span>
                         </div>
                         <p className="font-bold text-[#d4a574]">${order.total.toFixed(2)}</p>

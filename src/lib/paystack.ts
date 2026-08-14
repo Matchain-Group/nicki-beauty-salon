@@ -1,4 +1,4 @@
-const PAYSTACK_PUBLIC_KEY = 'pk_test_c7c83c02837f509c8b481e8e0dc25224882cb6be';
+const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
 
 export const paystackConfig = {
