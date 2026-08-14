@@ -45,9 +45,9 @@ export async function GET() {
     const portfolioCount = await PortfolioItem.countDocuments()
     if (portfolioCount === 0) {
       await PortfolioItem.insertMany([
-        { title: 'Elegant Hair Styling', image: '/images/hero/hairstyle1.jpg', category: 'Hair Styling', isPublished: true },
-        { title: 'Luxury Hair Treatment', image: '/images/hero/treatment1.jpg', category: 'Hair Treatment', isPublished: true },
-        { title: 'Professional Styling', image: '/images/hero/style1.jpg', category: 'Hair Styling', isPublished: true },
+        { title: 'Elegant Hair Styling', image: '/images/portfolio/bridal-makeup-1.jpg', category: 'Hair Styling', isPublished: true },
+        { title: 'Luxury Hair Treatment', image: '/images/portfolio/hair-coloring.jpg', category: 'Hair Treatment', isPublished: true },
+        { title: 'Professional Styling', image: '/images/portfolio/glam-makeup.jpg', category: 'Hair Styling', isPublished: true },
         { title: 'Facial Treatment', image: '/images/What-is-a-Facial.jpeg', category: 'Facial', isPublished: true },
         { title: 'Lash Extensions', image: '/images/lash+extensions.jpg', category: 'Lashes', isPublished: true },
       ])

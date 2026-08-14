@@ -63,7 +63,7 @@ const portfolioItems = [
   {
     id: 2,
     title: 'Lash Extensions Result',
-    image: '/images/portfolio/lash-result-1.jpg',
+    image: '/images/portfolio/lash-result-1.webp',
     category: 'Lashes',
   },
   {
@@ -120,19 +120,19 @@ const specialOffers = [
     id: 1,
     title: 'New Hair Treatment',
     description: 'Keratin smoothing treatment - 20% off this month',
-    image: '/images/middle-aged-african-american-woman-600nw-2041985189.jpg',
+    image: '/images/hair-relaxing-service.jpg',
   },
   {
     id: 2,
     title: 'Lash Extension Special',
     description: 'Get volume lashes with complimentary touch-up',
-    image: '/images/lash+extensions.jpg',
+    image: '/images/istockphoto-2035405459-612x612.jpg',
   },
   {
     id: 3,
     title: 'Facial Package Deal',
     description: '3 facial sessions for price of 2',
-    image: '/images/What-is-a-Facial.jpeg',
+    image: '/images/6d40b8b6393114b16793ed08d119a7c0.jpg',
   },
 ];
 
