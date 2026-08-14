@@ -13,8 +13,16 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.text();
     const signature = request.headers.get('x-paystack-signature');
 
-    // Verify webhook signature (security check)
-    if (signature && PAYSTACK_SECRET) {
+    // Verify webhook signature (security check). When a secret is configured,
+    // a valid signature is mandatory — otherwise anyone could forge this payload.
+    if (!PAYSTACK_SECRET) {
+      console.error('PAYSTACK_SECRET_KEY is not configured — webhook signature verification disabled');
+    } else if (!signature) {
+      return NextResponse.json(
+        { error: 'Missing signature' },
+        { status: 401 }
+      );
+    } else {
       const hash = crypto
         .createHmac('sha512', PAYSTACK_SECRET)
         .update(rawBody)
@@ -40,19 +48,37 @@ export async function POST(request: NextRequest) {
 
       await connectDB();
 
-      // Find order by Paystack reference
-      const order = await Order.findOne({ paystackRef: reference });
+      // Find order by Paystack reference. The cart creates the order before
+      // redirecting to Paystack; create one here as a fallback if it is missing
+      // so a successful charge is always recorded.
+      let order = await Order.findOne({ paystackRef: reference });
 
       if (!order) {
-        console.error('Order not found for reference:', reference);
-        return NextResponse.json(
-          { error: 'Order not found' },
-          { status: 404 }
+        const items = metadata?.items || [];
+        const priceOf = items.reduce(
+          (total: number, i: any) => total + (Number(i.price) || 0) * (Number(i.quantity) || 1),
+          0
         );
+        order = await Order.create({
+          customerName: customer?.email || metadata?.email || 'Customer',
+          email: customer?.email || metadata?.email || '',
+          phone: metadata?.phone || '',
+          products: items.map((i: any) => ({
+            productId: i.id,
+            title: i.title,
+            price: i.price,
+            quantity: i.quantity || 1,
+          })),
+          total: Number(metadata?.total) || (amount ? amount / 100 : priceOf),
+          paystackRef: reference,
+          status: 'paid',
+          paidAt: new Date(),
+        });
+        console.log('Order created from webhook for reference:', reference);
       }
 
-      // Update order status
-      order.paymentStatus = 'paid';
+      // Update order status using the actual schema fields
+      order.status = 'paid';
       order.paidAt = new Date();
       await order.save();
 
@@ -65,7 +91,7 @@ export async function POST(request: NextRequest) {
         createdAt: order.createdAt,
         paymentStatus: 'paid',
         items: order.products.map((p: any) => ({
-          name: p.name,
+          name: p.title,
           quantity: p.quantity || 1,
           price: p.price,
         })),

@@ -18,7 +18,8 @@ interface Order {
   }>;
   total: number;
   paystackRef: string;
-  paymentStatus: string;
+  status: 'pending' | 'paid';
+  paidAt?: string;
   createdAt: string;
 }
 
@@ -145,9 +146,9 @@ export default function OrdersPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {getStatusIcon(order.paymentStatus)}
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(order.paymentStatus)}`}>
-                      {order.paymentStatus}
+                    {getStatusIcon(order.status)}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(order.status)}`}>
+                      {order.status}
                     </span>
                   </div>
                 </div>

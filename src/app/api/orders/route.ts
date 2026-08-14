@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       createdAt: order.createdAt,
       paymentStatus: 'pending',
       items: order.products.map((p: any) => ({
-        name: p.name,
+        name: p.title,
         quantity: p.quantity || 1,
         price: p.price,
       })),

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
           email,
           amount: Math.round(amount * 100),
           metadata: metadata || {},
-          currency: 'USD',
+          currency: process.env.PAYSTACK_CURRENCY || 'NGN',
           callback_url: `${process.env.NEXT_PUBLIC_URL}/payment/verify`,
         }),
       }

@@ -13,6 +13,7 @@ export interface IOrder extends Document {
   total: number;
   paystackRef: string;
   status: 'pending' | 'paid';
+  paidAt?: Date;
   createdAt: Date;
 }
 
@@ -29,8 +30,8 @@ const OrderSchema: Schema = new Schema({
   },
   phone: {
     type: String,
-    required: [true, 'Phone number is required'],
     trim: true,
+    default: '',
   },
   products: [{
     productId: {
@@ -66,6 +67,9 @@ const OrderSchema: Schema = new Schema({
     type: String,
     enum: ['pending', 'paid'],
     default: 'pending',
+  },
+  paidAt: {
+    type: Date,
   },
 }, {
   timestamps: true,

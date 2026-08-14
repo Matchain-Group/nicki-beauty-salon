@@ -42,7 +42,31 @@ export default function CartPage() {
 
       const data = await response.json();
       
-      if (data.success && data.data?.authorization_url) {
+if (data.success && data.data?.authorization_url) {
+        // Persist the order before redirecting so the webhook and order pages
+        // can find it once payment succeeds.
+        const paystackRef = data.data.reference;
+        try {
+          await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customerName: session?.user?.name || 'Customer',
+              email: session?.user?.email || 'guest@nickibeauty.com',
+              phone: '',
+              products: items.map(i => ({
+                productId: i.id,
+                title: i.title,
+                price: i.price,
+                quantity: i.quantity,
+              })),
+              total,
+              paystackRef,
+            }),
+          });
+        } catch (orderError) {
+          console.error('Failed to save order:', orderError);
+        }
         window.location.href = data.data.authorization_url;
       } else {
         const errorMsg = data.error || 'Failed to initialize payment';
