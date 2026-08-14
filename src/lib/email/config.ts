@@ -1,15 +1,29 @@
 import nodemailer from 'nodemailer';
 
-// Email configuration
+// Email configuration (Brevo/Sendinblue SMTP relay).
+// Falls back to localhost only when SMTP_USER is unset, so misconfiguration is
+// surfaced loudly instead of silently switching providers.
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+
 export const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER || 'your-email@gmail.com',
-    pass: process.env.SMTP_PASS || 'your-app-password',
-  },
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_PORT === 465, // true for 465, false for 587
+  auth: SMTP_USER
+    ? { user: SMTP_USER, pass: SMTP_PASS }
+    : undefined,
 });
+
+// Verify config at module load so mail failures are obvious, not silent.
+if (!SMTP_USER) {
+  console.error(
+    '❌ SMTP_USER is not set — email receipts/invoices will not be sent. ' +
+    'Configure SMTP_HOST/SMTP_USER/SMTP_PASS/SMTP_FROM in your environment.'
+  );
+}
 
 // Company branding - USA Business Details
 export const companyInfo = {
