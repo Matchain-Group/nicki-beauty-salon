@@ -1,4 +1,4 @@
-# Nicki Beauty Salon
+# Beauty salon booking Next.js
 
 A full-stack beauty salon website where customers can book hair appointments and buy beauty products online.
 
